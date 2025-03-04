@@ -25,10 +25,10 @@ pipeline {
     }
     post {
         success {
-            echo '테스트 및 빌드 성공'
+            echo '테스트 및 빌드 성공!!!'
         }
         failure {
-            echo '테스트 또는 빌드 실패'
+            echo '테스트 또는 빌드 실패!!!'
         }
     }
 }
