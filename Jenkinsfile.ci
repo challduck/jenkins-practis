@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Git Clone') {
+            steps {
+                git branch: 'dev', url: 'https://github.com/challduck/jenkins-practis.git'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh './gradlew test'
+                echo 'test success'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh './gradlew clean build'
+                echo 'build success'
+            }
+        }
+    }
+    post {
+        success {
+            echo '테스트 및 빌드 성공'
+        }
+        failure {
+            echo '테스트 또는 빌드 실패'
+        }
+    }
+}
