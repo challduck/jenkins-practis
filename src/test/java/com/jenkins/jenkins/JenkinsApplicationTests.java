@@ -10,4 +10,8 @@ class JenkinsApplicationTests {
     void contextLoads() {
     }
 
+    @Test
+    void throwException(){
+        throw new RuntimeException("빌드에 실패한다.");
+    }
 }
