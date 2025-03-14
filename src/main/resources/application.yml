@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: jenkins
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5431/jenkins
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: create
+server:
+  port: 8080
