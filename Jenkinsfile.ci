@@ -43,12 +43,6 @@ pipeline {
     }
 
     post {
-        always {
-            script {
-                echo "PostgreSQL 컨테이너 정리 중..."
-                def exists = sh(script: "docker ps -a --filter 'name=${POSTGRES_CONTAINER}' --format '{{.ID}}'", returnStdout: true).trim()
-            }
-        }
         success {
             echo '테스트 및 빌드 성공'
         }
