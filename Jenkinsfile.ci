@@ -24,10 +24,10 @@ pipeline {
                         "--rm"
                     ) { c ->
 
-                        // PostgreSQL이 준비될 때까지 대기
+                        // PostgreSQL이 준비될 때까지 대기 (컨테이너 내부에서 실행)
                         timeout(time: 30, unit: 'SECONDS') {
                             waitUntil {
-                                def status = sh(script: "pg_isready -h localhost -p 5432", returnStatus: true)
+                                def status = sh(script: "docker exec ${POSTGRES_CONTAINER} pg_isready -U postgres -h localhost", returnStatus: true)
                                 return status == 0
                             }
                         }
