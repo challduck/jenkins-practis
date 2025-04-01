@@ -8,11 +8,11 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('Start PostgreSQL and Test') {
             steps {
                 script {
                     docker.image('postgres:13').withRun(
-                        '-e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=jenkins -p 5431:5432'
+                        '-e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=jenkins -p 5431:5432 -v pgdata:/var/lib/postgresql/data'
                     ) { c ->
                         // PostgreSQL이 준비될 때까지 대기
                         timeout(time: 30, unit: 'SECONDS') {
@@ -43,6 +43,10 @@ pipeline {
         }
         failure {
             echo '테스트 또는 빌드 실패'
+        }
+        cleanup {
+            // 사용한 볼륨 삭제
+            sh 'docker volume rm pgdata || true'
         }
     }
 }
