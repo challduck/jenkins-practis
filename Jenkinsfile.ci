@@ -12,18 +12,18 @@ pipeline {
             steps {
                 script {
                     docker.image('postgres:13').withRun(
-                        '-e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=jenkins -p 5431:5432 -v pgdata:/var/lib/postgresql/data'
+                        '-e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=jenkins -p 5432:5432 -v pgdata:/var/lib/postgresql/data'
                     ) { c ->
                         // PostgreSQL이 준비될 때까지 대기
                         timeout(time: 30, unit: 'SECONDS') {
                             waitUntil {
-                                def status = sh(script: "pg_isready -h localhost -p 5431", returnStatus: true)
+                                def status = sh(script: "pg_isready -h localhost -p 5432", returnStatus: true)
                                 return status == 0
                             }
                         }
                         sh 'chmod +x gradlew'
                         // 빌드 및 테스트 실행
-                        sh './gradlew test -Dspring.datasource.url=jdbc:postgresql://localhost:5431/jenkins'
+                        sh './gradlew test -Dspring.datasource.url=jdbc:postgresql://localhost:5432/jenkins'
                         echo 'test success'
                     }
                 }
