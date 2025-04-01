@@ -20,8 +20,7 @@ pipeline {
                         "-e POSTGRES_USER=postgres " +
                         "-e POSTGRES_PASSWORD=postgres " +
                         "-e POSTGRES_DB=jenkins " +
-                        "-p 5432:5432 " +
-                        "--rm"
+                        "-p 5432:5432 "
                     ) { c ->
 
                         // PostgreSQL이 준비될 때까지 대기 (컨테이너 내부에서 실행)
