@@ -47,10 +47,6 @@ pipeline {
             script {
                 echo "PostgreSQL 컨테이너 정리 중..."
                 def exists = sh(script: "docker ps -a --filter 'name=${POSTGRES_CONTAINER}' --format '{{.ID}}'", returnStdout: true).trim()
-                if (exists) {
-                    sh "docker stop ${POSTGRES_CONTAINER} || true"
-                    sh "docker rm -f --volumes ${POSTGRES_CONTAINER} || true"
-                }
             }
         }
         success {
