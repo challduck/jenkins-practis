@@ -34,7 +34,7 @@ pipeline {
 
                         sh 'chmod +x gradlew'
                         // 빌드 및 테스트 실행
-                        sh './gradlew test -Dspring.datasource.url=jdbc:postgresql://localhost:5432/jenkins'
+                        sh './gradlew test -Dspring.datasource.url=jdbc:postgresql://host.docker.internal:5432/jenkins'
                         echo 'test success'
                     }
                 }
