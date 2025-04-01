@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        POSTGRES_CONTAINER = 'jenkins-postgres'
+    }
+
     stages {
         stage('Git Clone') {
             steps {
@@ -12,8 +16,14 @@ pipeline {
             steps {
                 script {
                     docker.image('postgres:13').withRun(
-                        '-e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=jenkins -p 5432:5432 --rm'
+                        "--name ${POSTGRES_CONTAINER} " +
+                        "-e POSTGRES_USER=postgres " +
+                        "-e POSTGRES_PASSWORD=postgres " +
+                        "-e POSTGRES_DB=jenkins " +
+                        "-p 5432:5432 " +
+                        "--rm"
                     ) { c ->
+
                         // PostgreSQL이 준비될 때까지 대기
                         timeout(time: 30, unit: 'SECONDS') {
                             waitUntil {
@@ -21,6 +31,7 @@ pipeline {
                                 return status == 0
                             }
                         }
+
                         sh 'chmod +x gradlew'
                         // 빌드 및 테스트 실행
                         sh './gradlew test -Dspring.datasource.url=jdbc:postgresql://localhost:5432/jenkins'
@@ -29,15 +40,19 @@ pipeline {
                 }
             }
         }
+    }
 
-        stage('Build') {
-            steps {
-                sh './gradlew clean build'
-                echo 'build success'
+    post {
+        always {
+            script {
+                echo "PostgreSQL 컨테이너 정리 중..."
+                def exists = sh(script: "docker ps -a --filter 'name=${POSTGRES_CONTAINER}' --format '{{.ID}}'", returnStdout: true).trim()
+                if (exists) {
+                    sh "docker stop ${POSTGRES_CONTAINER} || true"
+                    sh "docker rm -f --volumes ${POSTGRES_CONTAINER} || true"
+                }
             }
         }
-    }
-    post {
         success {
             echo '테스트 및 빌드 성공'
         }
