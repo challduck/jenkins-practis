@@ -1,0 +1,39 @@
+services:
+  # PostgreSQL + PostGIS
+  user-postgres:
+    image: postgis/postgis:latest
+    container_name: user-postgres
+    platform: linux/amd64
+    ports:
+      - "${OVERTIME_POSTGRES_USER_PORT}:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: overtime
+    volumes:
+      - user_postgres_data:/var/lib/postgresql/data
+    networks:
+      - overtime_network
+
+  # PostgreSQL + PostGIS
+  ai-postgres:
+    image: postgis/postgis:latest
+    container_name: ai-postgres
+    platform: linux/amd64
+    ports:
+      - "${OVERTIME_POSTGRES_AI_PORT}:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: overtime
+    volumes:
+      - ai_postgres_data:/var/lib/postgresql/data
+    networks:
+      - overtime_network
+
+volumes:
+  user_postgres_data:
+  ai_postgres_data:
+
+networks:
+  overtime_network:
