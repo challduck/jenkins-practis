@@ -1,5 +1,6 @@
+version: '3.8'
+
 services:
-  # PostgreSQL + PostGIS
   user-postgres:
     image: postgis/postgis:latest
     container_name: user-postgres
@@ -14,8 +15,12 @@ services:
       - user_postgres_data:/var/lib/postgresql/data
     networks:
       - overtime_network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-  # PostgreSQL + PostGIS
   ai-postgres:
     image: postgis/postgis:latest
     container_name: ai-postgres

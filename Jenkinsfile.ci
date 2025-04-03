@@ -21,9 +21,10 @@ pipeline {
 
                     timeout(time: 30, unit: 'SECONDS') {
                         waitUntil {
-                            echo 'Checking PostgreSQL readiness...'
-                            def status = sh(script: "docker exec ${POSTGRES_CONTAINER} pg_isready -U postgres -h localhost", returnStatus: true)
-                            return status == 0
+                            echo 'Checking PostgreSQL health...'
+                            def health = sh(script: "docker inspect --format='{{.State.Health.Status}}' ${POSTGRES_CONTAINER}", returnStdout: true).trim()
+                            echo "Current health: ${health}"
+                            return health == "healthy"
                         }
                     }
 
