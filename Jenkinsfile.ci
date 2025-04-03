@@ -22,7 +22,7 @@ pipeline {
 
                     timeout(time: 30, unit: 'SECONDS') {
                         waitUntil {
-                            def status = sh(script: "docker exec ${POSTGRES_CONTAINER} pg_isready -U postgres -h localhost", returnStatus: true)
+                            def status = sh(script: "docker exec ${POSTGRES_CONTAINER} pg_isready -U postgres -h host.docker.internal", returnStatus: true)
                             return status == 0
                         }
                     }
