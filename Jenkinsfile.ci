@@ -28,7 +28,7 @@ pipeline {
                     }
 
                     sh "chmod +x gradlew"
-                    sh "./gradlew test -Dspring.datasource.url=jdbc:postgresql://host.docker.internal:${env.OVERTIME_POSTGRES_USER_PORT}/overtime"
+                    sh "./gradlew test -Dspring.datasource.url=jdbc:postgresql://host.docker.internal:$OVERTIME_POSTGRES_USER_PORT/overtime"
                     echo 'test success'
                 }
             }
