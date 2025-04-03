@@ -17,12 +17,11 @@ pipeline {
         stage('Start PostgreSQL and Test') {
             steps {
                 script {
-
                     sh "docker compose -f docker-compose.db.yml up -d"
 
                     timeout(time: 30, unit: 'SECONDS') {
                         waitUntil {
-                        echo 'docker ps -a'
+                            echo 'Checking PostgreSQL readiness...'
                             def status = sh(script: "docker exec ${POSTGRES_CONTAINER} pg_isready -U postgres -h localhost", returnStatus: true)
                             return status == 0
                         }
@@ -37,6 +36,10 @@ pipeline {
     }
 
     post {
+        always {
+            echo 'Cleaning up Docker Compose services and volumes...'
+            sh "docker compose -f docker-compose.db.yml down -v"
+        }
         success {
             echo '테스트 및 빌드 성공'
         }
